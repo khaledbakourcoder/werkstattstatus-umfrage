@@ -22,7 +22,7 @@ questions.js  ──►  survey.js  ──POST──►  Apps Script (doPost)  �
 ## Einrichtung (ca. 10 Minuten)
 
 1. **Google Sheet anlegen**, z. B. „WerkstattStatus Umfrage“, mit einem gemeinsamen Team-Account.
-2. **Script einfügen:** Im Sheet *Erweiterungen → Apps Script*, Inhalt von `Code.gs` einfügen, speichern. Funktion `setup` auswählen und *Ausführen* (Berechtigung bestätigen). Danach gibt es die Blätter „Antworten“ und „Tester“.
+2. **Script einfügen:** Im Sheet *Erweiterungen → Apps Script*, Inhalt von `Code.gs` einfügen, speichern. Funktion `setup` auswählen und *Ausführen* (Berechtigung bestätigen). Danach gibt es das Blatt „Antworten“.
 3. **Als Web-App bereitstellen:** *Bereitstellen → Neue Bereitstellung → Typ: Web-App*
    - Ausführen als: **Ich**
    - Zugriff: **Jeder**
@@ -69,8 +69,6 @@ Blatt **„Antworten“**, eine Zeile pro Teilnahme:
 
 Für die Auswertung heißt „leer“ nicht „keine Meinung“, sondern „nicht im Pfad“. Das n pro Frage ist die Zahl der nicht leeren Zellen.
 
-Blatt **„Tester“**: nur Zeitpunkt und Kontakt, ohne Verbindung zu den Antworten (Anonymität der Umfrage).
-
 ## Daten für das Dashboard
 
 ```js
@@ -79,10 +77,9 @@ const { rows, count, updatedAt } = await res.json();
 // rows: [{ submittedAt, F1: "25–39", F6: "A | B", … }]
 ```
 
-Das Dashboard kann `questions.js` ebenfalls einbinden und daraus Fragetexte, Optionsreihenfolge und `traces` für Beschriftungen und den Bezug zu H01–H04 übernehmen. Tester-Kontakte werden über `doGet` nie ausgeliefert. Optional `READ_TOKEN` in `Code.gs` setzen.
+Das Dashboard kann `questions.js` ebenfalls einbinden und daraus Fragetexte, Optionsreihenfolge und `traces` für Beschriftungen und den Bezug zu H01–H04 übernehmen. Optional `READ_TOKEN` in `Code.gs` setzen.
 
 ## Datenschutz
 
-- Keine personenbezogenen Daten in den Antworten, keine IP-Adressen gespeichert.
-- Kontaktdaten nur freiwillig und getrennt im Blatt „Tester“; nach Projektende löschen.
+- Die Umfrage erhebt keine Kontaktdaten (kein Name, keine E-Mail, keine Telefonnummer) und speichert keine IP-Adressen.
 - Freitexte werden auf 1000 Zeichen begrenzt; Zellen, die mit `=`, `+`, `-` oder `@` beginnen, werden entschärft (Formel-Injection).

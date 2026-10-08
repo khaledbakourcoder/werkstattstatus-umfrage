@@ -140,7 +140,7 @@
       main.append(title, hint,
         el("div", { class: "actions" }, el("button", { class: "btn btn--primary", onclick: goNext }, "Umfrage starten")));
     } else if (node.type === "end") {
-      main.append(title, hint, testerForm());
+      main.append(title, hint, el("p", { class: "q__status", id: "save-note", hidden: true }));
     } else {
       main.append(title, hint, field(node), error,
         el("div", { class: "actions" },
@@ -271,32 +271,6 @@
       note.hidden = false;
       note.textContent = "Keine Verbindung. Ihre Antworten werden gesendet, sobald Sie diese Seite wieder öffnen.";
     }
-  }
-
-  /** Kontaktformular für Prototyptester – ohne sessionId, damit es nicht mit den Antworten verknüpfbar ist. */
-  function testerForm() {
-    const status = el("p", { class: "q__status", role: "status" });
-    const input = el("input", {
-      class: "q__input", id: "tester", type: "text", maxlength: "120", autocomplete: "email",
-      placeholder: "E-Mail oder Telefonnummer",
-    });
-    const form = el("form", {
-      class: "tester",
-      onsubmit: async (e) => {
-        e.preventDefault();
-        const v = input.value.trim();
-        if (v.length < 5) { status.textContent = "Bitte geben Sie eine E-Mail-Adresse oder Telefonnummer ein."; status.className = "q__error"; return; }
-        btn.disabled = true;
-        await send({ action: "tester", contact: v, createdAt: new Date().toISOString() });
-        form.replaceWith(el("p", { class: "q__done" }, "Kontakt gespeichert. Wir melden uns, sobald der Prototyp bereitsteht."));
-      },
-    },
-      el("label", { class: "sr-only", for: "tester" }, "Kontakt für Prototyptests"),
-      el("div", { class: "tester__row" }, input),
-      status);
-    const btn = el("button", { class: "btn btn--primary", type: "submit" }, "Kontakt speichern");
-    form.querySelector(".tester__row").append(btn);
-    return el("div", {}, el("p", { class: "q__status", id: "save-note", hidden: true }), form);
   }
 
   // ---------- Start ----------

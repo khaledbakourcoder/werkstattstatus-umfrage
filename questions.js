@@ -213,9 +213,7 @@ window.SURVEY = {
     end: {
       type: "end",
       text: "Danke! Ihre Antworten sind gespeichert.",
-      hint:
-        "Möchten Sie später einen ersten Prototyp kurz ausprobieren? Dann hinterlassen Sie hier eine E-Mail-Adresse " +
-        "oder Telefonnummer. Sie wird getrennt von Ihren Antworten gespeichert.",
+      hint: "Sie helfen uns damit, eine Anwendung zu entwickeln, die sich am echten Werkstattalltag orientiert. Sie können diese Seite jetzt schließen.",
     },
   },
 };

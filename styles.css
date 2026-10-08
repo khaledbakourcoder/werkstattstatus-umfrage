@@ -1,0 +1,108 @@
+/* WerkstattStatus – Umfrage
+   Farbwelt: Werkstatthalle (kühler Betongrau), Signalgelb für den aktiven Schritt,
+   Grün für erledigte Teile – angelehnt an die Rot-bis-Grün-Statusidee aus dem Interview. */
+:root {
+  --concrete: #E8ECEE;
+  --panel: #F7F8F8;
+  --ink: #16232B;
+  --ink-soft: #4C5C66;
+  --line: #C3CCD1;
+  --signal: #F2B705;
+  --done: #2E7D4F;
+  --danger: #A8321E;
+  --radius: 6px;
+  --font: "Barlow", "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+  --font-cond: "Barlow Semi Condensed", "Barlow", "Arial Narrow", system-ui, sans-serif;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --concrete: #11191E; --panel: #18232A; --ink: #E7ECEF; --ink-soft: #A5B3BB;
+    --line: #34444E; --signal: #F5C53A; --done: #5DBB86; --danger: #F08A73;
+  }
+}
+*, *::before, *::after { box-sizing: inherit; }
+
+body {
+  margin: 0 auto;
+  max-width: 40rem;
+  padding: 1.25rem 1.25rem 3rem;
+  background: var(--concrete);
+  color: var(--ink);
+  font: 400 1.0625rem/1.55 var(--font);
+  -webkit-font-smoothing: antialiased;
+}
+
+.top { display: flex; flex-wrap: wrap; align-items: baseline; gap: .25rem 1rem; margin-bottom: 1.5rem; }
+.brand { margin: 0; font: 600 1.05rem/1 var(--font-cond); letter-spacing: .01em; }
+.brand__sub { margin: 0; color: var(--ink-soft); font-size: .875rem; }
+
+/* Fortschritt: drei Teile, jeder mit eigener Leiste */
+.progress { list-style: none; display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; margin: 0 0 2.25rem; padding: 0; }
+.stage { display: flex; flex-direction: column; gap: .4rem; }
+.stage__bar { display: block; height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; }
+.stage__fill { display: block; height: 100%; background: var(--signal); transform-origin: left; transition: transform .35s ease; }
+.stage--done .stage__fill { background: var(--done); }
+.stage__label { font: 500 .8125rem/1.2 var(--font-cond); color: var(--ink-soft); }
+.stage--active .stage__label { color: var(--ink); font-weight: 600; }
+
+/* Frage */
+.q__text { margin: 0 0 .5rem; font: 600 clamp(1.45rem, 4.6vw, 1.9rem)/1.2 var(--font); letter-spacing: -.005em; outline: none; }
+.q__hint { margin: 0 0 1.25rem; color: var(--ink-soft); max-width: 34rem; }
+.q__error { margin: .75rem 0 0; color: var(--danger); font-size: .9375rem; font-weight: 500; outline: none; }
+.q__status { margin: .75rem 0 0; color: var(--ink-soft); font-size: .9375rem; }
+.q__done { margin: 1rem 0 0; padding: .9rem 1rem; border-left: 4px solid var(--done); background: var(--panel); border-radius: 0; }
+
+/* Antwortoptionen */
+.options { border: 0; margin: 1.25rem 0 0; padding: 0; display: grid; gap: .5rem; }
+.option {
+  position: relative; display: flex; align-items: center; gap: .85rem;
+  min-height: 3.25rem; padding: .75rem 1rem;
+  background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius);
+  cursor: pointer; transition: border-color .15s, box-shadow .15s;
+}
+.option:hover { border-color: var(--ink-soft); }
+.option input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.option__mark {
+  flex: none; width: 1.25rem; height: 1.25rem; border: 2px solid var(--ink-soft); background: var(--panel);
+  border-radius: 50%; display: grid; place-items: center;
+}
+.option input[type="checkbox"] ~ .option__mark { border-radius: 4px; }
+.option:has(input:checked) { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+.option input:checked ~ .option__mark { border-color: var(--ink); background: var(--signal); }
+.option input:checked ~ .option__mark::after { content: ""; width: .45rem; height: .45rem; border-radius: 50%; background: var(--ink); }
+.option input[type="checkbox"]:checked ~ .option__mark::after { border-radius: 1px; }
+.option input:focus-visible ~ .option__mark { outline: 3px solid var(--signal); outline-offset: 2px; }
+.option__label { line-height: 1.35; }
+
+.option__other, .q__input, .q__textarea {
+  width: 100%; font: inherit; color: var(--ink); background: var(--panel);
+  border: 1px solid var(--line); border-radius: var(--radius); padding: .7rem .9rem;
+}
+.option__other { margin: -.15rem 0 .25rem; }
+.q__textarea { margin-top: 1rem; resize: vertical; min-height: 7rem; }
+:is(.option__other, .q__input, .q__textarea):focus { outline: 3px solid var(--signal); outline-offset: 1px; border-color: var(--ink); }
+
+/* Aktionen */
+.actions { display: flex; justify-content: space-between; gap: .75rem; margin-top: 2rem; }
+.actions:has(> :only-child) { justify-content: flex-start; }
+.btn {
+  font: 600 1rem/1 var(--font); min-height: 3rem; padding: 0 1.4rem; border-radius: var(--radius);
+  cursor: pointer; border: 1px solid transparent;
+}
+.btn--primary { background: var(--ink); color: var(--concrete); }
+.btn--primary:hover { filter: brightness(1.15); }
+.btn--ghost { background: transparent; color: var(--ink); border-color: var(--line); }
+.btn--ghost:hover { border-color: var(--ink-soft); }
+.btn:focus-visible { outline: 3px solid var(--signal); outline-offset: 2px; }
+.btn:disabled { opacity: .6; cursor: default; }
+
+.tester { margin-top: 1.25rem; }
+.tester__row { display: flex; gap: .5rem; flex-wrap: wrap; }
+.tester__row .q__input { flex: 1 1 14rem; }
+
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); border: 0; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
